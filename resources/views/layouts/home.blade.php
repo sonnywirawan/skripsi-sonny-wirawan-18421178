@@ -160,7 +160,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Powered by Orange Multimedia @ 2021</span>
+                        <span>By Sonny Wirawan - 18421178 - FTI Universitas Widya Dharma Pontianak</span>
                     </div>
                 </div>
             </footer>

@@ -38,7 +38,9 @@ Route::middleware('auth')->group(function() {
                 Route::delete('{pendaftaran_id}', [PendaftaranController::class, 'delete'])->name('pendaftaran.delete');
 
                 Route::get('/form/{pendaftaran_id?}', [PendaftaranController::class, 'form'])->name('pendaftaran.form');
-                Route::put('/daftar_ulang/{pendaftaran_id}', [PendaftaranController::class, 'daftar_ulang'])->name('pendaftaran.daftar_ulang');
+                Route::put('/berhasil_datang/{pendaftaran_id}', [PendaftaranController::class, 'berhasil_datang'])->name('pendaftaran.berhasil_datang');
+                Route::put('/berhasil_vaksin/{pendaftaran_id}', [PendaftaranController::class, 'berhasil_vaksin'])->name('pendaftaran.berhasil_vaksin');
+                Route::get('/formulir_pendaftaran/{pendaftaran_id}', [PendaftaranController::class, 'formulir_pendaftaran'])->name('pendaftaran.formulir_pendaftaran');
             });
         });
         Route::get('/form/{event_id?}', [EventController::class, 'form'])->name('event.form');

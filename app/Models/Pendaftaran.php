@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\Event;
-use App\Models\Kabupaten;
-use App\Models\Pekerjaan;
 
 class Pendaftaran extends Model
 {
@@ -17,22 +15,19 @@ class Pendaftaran extends Model
     protected $fillable = [
         'user_id',
         'event_id',
-        'nip',
+        'nik',
         'nama_lengkap',
         'no_hp',
+        'jk',
         'tempat_lahir',
         'tgl_lahir',
-        'jk',
-        'pekerjaan_id',
-        'pangkat',
-        'jabatan',
-        'instansi',
-        'kabupaten_id',
-        'npwp',
-        'nama_bank',
-        'no_rekening',
-        'biaya_perjalanan',
-        'status_pendaftaran_ulang',
+        'alamat',
+        'foto_ktp',
+        'tgl_daftar',
+        'nomor_antrian',
+        'jenis_pendaftaran',
+        'status_kedatangan',
+        'status_keberhasilan_vaksinasi'
     ];
 
     public function user() {
@@ -41,13 +36,5 @@ class Pendaftaran extends Model
 
     public function event() {
         return $this->belongsTo(Event::class, 'event_id');
-    }
-
-    public function kabupaten() {
-        return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
-    }
-
-    public function pekerjaan() {
-        return $this->belongsTo(Pekerjaan::class, 'pekerjaan_id');
     }
 }

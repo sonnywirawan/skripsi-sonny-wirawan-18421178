@@ -9,17 +9,18 @@ use App\Models\Event;
 use DB;
 use Auth;
 use Validator;
+use PDF;
 use Carbon\Carbon;
 
 class PendaftaranApiController extends Controller
 {
     public function find_by_id($id) {
-        $pendaftar = Pendaftaran::where('id', $id)->with(['event'])->get()->first();
+        $pendaftar = Pendaftaran::where('id', $id)->with('event')->get()->first();
         return $pendaftar;
     }
 
     public function get_pendaftaran($event_id) {
-        return Pendaftaran::where('event_id', $event_id)->with(['event', 'pekerjaan', 'kabupaten'])->get();
+        return Pendaftaran::where('event_id', $event_id)->with('event')->get();
     }
 
     public function create_pendaftar($event_id, Request $request) {
@@ -32,55 +33,75 @@ class PendaftaranApiController extends Controller
         }
         // Check Waktu Pendaftaran & Limit
         $event = Event::find($event_id);
-        if(Carbon::now() < Carbon::parse($event->registration_start_date)) {
+        // if(Carbon::now() < Carbon::parse($event->registration_start_date)) {
+        //     return response()->json([
+        //         'error' => true,
+        //         'message' => "Pendaftaran Belum Dibuka!"
+        //     ], 400);
+        // } else if(Carbon::now() > Carbon::parse($event->registration_end_date)) {
+        //     return response()->json([
+        //         'error' => true,
+        //         'message' => "Pendaftaran Telah Ditutup!"
+        //     ], 400);
+        // } else if(Pendaftaran::where('event_id', $event_id)->count() >= $event->limit) {
+        //     return response()->json([
+        //         'error' => true,
+        //         'message' => "Pendaftaran Event Penuh!"
+        //     ], 400);
+        // }
+
+        // Error if age < 18
+        if(Carbon::parse($request->tgl_lahir)->age < 18) {
             return response()->json([
                 'error' => true,
-                'message' => "Pendaftaran Belum Dibuka!"
-            ], 400);
-        } else if(Carbon::now() > Carbon::parse($event->registration_end_date)) {
-            return response()->json([
-                'error' => true,
-                'message' => "Pendaftaran Telah Ditutup!"
-            ], 400);
-        } else if(Pendaftaran::where('event_id', $event_id)->count() >= $event->limit) {
-            return response()->json([
-                'error' => true,
-                'message' => "Pendaftaran Event Penuh!"
+                'message' => 'Maaf, umur minimum vaksinasi adalah 18 tahun.'
             ], 400);
         }
 
-        // Check NIP
+        // Check antrian
+        $antrian = Pendaftaran::where('tgl_daftar', today()->format('Y-m-d'))
+                                ->where('jenis_pendaftaran', $request->jenis_pendaftaran)
+                                ->max('nomor_antrian');
+        if($antrian != null) {
+            if($antrian == $event->limit && $request->jenis_pendaftaran == 'Online') {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Maaf, antrian sudah penuh.'
+                ], 400);
+            } else {
+                $nomor_antrian = $antrian + 1;
+            }
+        } else {
+            $nomor_antrian = 1;
+        }
+
+        // Check NIK
         $nip = Pendaftaran::where('event_id', $event_id)
-                        ->where('nip', $request->nip)
+                        ->where('nik', $request->nik)
                         ->get();
         if(count($nip) != 0) {
             return response()->json([
                 'error' => true,
-                'message' => "NIP sudah terdaftar pada event ini!"
+                'message' => "NIK sudah terdaftar pada event ini!"
             ], 400);
         }
         DB::beginTransaction();
         try {
-
             $pendaftar = Pendaftaran::create([
-                'user_id'                   => Auth::user()->id,
-                'event_id'                  => $event_id,
-                'nip'                       => $request->nip,
-                'nama_lengkap'              => $request->nama_lengkap,
-                'no_hp'                     => $request->no_hp,
-                'tempat_lahir'              => $request->tempat_lahir,
-                'tgl_lahir'                 => $request->tgl_lahir,
-                'jk'                        => $request->jk,
-                'pekerjaan_id'              => $request->pekerjaan_id,
-                'pangkat'                   => $request->pangkat,
-                'jabatan'                   => $request->jabatan,
-                'instansi'                  => $request->instansi,
-                'kabupaten_id'              => $request->kabupaten_id,
-                'npwp'                      => $request->npwp,
-                'nama_bank'                 => $request->nama_bank,
-                'no_rekening'               => $request->no_rekening,
-                'biaya_perjalanan'          => join("", explode(",", $request->biaya_perjalanan)),
-                'status_pendaftaran_ulang'  => 0,
+                'user_id'                       => Auth::user()->id,
+                'event_id'                      => $event_id,
+                'nik'                           => $request->nik,
+                'nama_lengkap'                  => $request->nama_lengkap,
+                'no_hp'                         => $request->no_hp,
+                'jk'                            => $request->jk,
+                'tempat_lahir'                  => $request->tempat_lahir,
+                'tgl_lahir'                     => Carbon::parse($request->tgl_lahir)->format('Y-m-d'),
+                'alamat'                        => $request->alamat,
+                'tgl_daftar'                    => today()->format('Y-m-d'),
+                'nomor_antrian'                 => $nomor_antrian,
+                'jenis_pendaftaran'             => $request->jenis_pendaftaran,
+                'status_kedatangan'             => 0,
+                'status_keberhasilan_vaksinasi' => 0,
             ]);
             DB::commit();
 
@@ -104,84 +125,57 @@ class PendaftaranApiController extends Controller
         try {
             $pendaftar = Pendaftaran::find($id);
 
-            if($request->has('nip')) {
-                if($request->nip != null) {
-                    $pendaftar->nip = $request->nip;
+            if($request->has('nik')) {
+                if($request->nik != null) {
+                    $pendaftar->nik = $request->nik;
                 }
             }
+
             if($request->has('nama_lengkap')) {
                 if($request->nama_lengkap != null) {
                     $pendaftar->nama_lengkap = $request->nama_lengkap;
                 }
             }
+
             if($request->has('no_hp')) {
                 if($request->no_hp != null) {
                     $pendaftar->no_hp = $request->no_hp;
                 }
             }
-            if($request->has('tempat_lahir')) {
-                if($request->tempat_lahir != null) {
-                    $pendaftar->tempat_lahir = $request->tempat_lahir;
-                }
-            }
-            if($request->has('tgl_lahir')) {
-                if($request->tgl_lahir != null) {
-                    $pendaftar->tgl_lahir = $request->tgl_lahir;
-                }
-            }
-            if($request->has('pekerjaan_id')) {
-                if($request->pekerjaan_id != null) {
-                    $pendaftar->pekerjaan_id = $request->pekerjaan_id;
-                }
-            }
+
             if($request->has('jk')) {
                 if($request->jk != null) {
                     $pendaftar->jk = $request->jk;
                 }
             }
-            if($request->has('pangkat')) {
-                if($request->pangkat != null) {
-                    $pendaftar->pangkat = $request->pangkat;
+
+            if($request->has('tempat_lahir')) {
+                if($request->tempat_lahir != null) {
+                    $pendaftar->tempat_lahir = $request->tempat_lahir;
                 }
             }
-            if($request->has('jabatan')) {
-                if($request->jabatan != null) {
-                    $pendaftar->jabatan = $request->jabatan;
+
+            if($request->has('tgl_lahir')) {
+                if($request->tgl_lahir != null) {
+                    $pendaftar->tgl_lahir = Carbon::parse($request->tgl_lahir)->format('Y-m-d');
                 }
             }
-            if($request->has('instansi')) {
-                if($request->instansi != null) {
-                    $pendaftar->instansi = $request->instansi;
+
+            if($request->has('alamat')) {
+                if($request->alamat != null) {
+                    $pendaftar->alamat = $request->alamat;
                 }
             }
-            if($request->has('kabupaten_id')) {
-                if($request->kabupaten_id != null) {
-                    $pendaftar->kabupaten_id = $request->kabupaten_id;
+
+            if($request->has('status_kedatangan')) {
+                if($request->status_kedatangan != null) {
+                    $pendaftar->status_kedatangan = $request->status_kedatangan;
                 }
             }
-            if($request->has('npwp')) {
-                if($request->npwp != null) {
-                    $pendaftar->npwp = $request->npwp;
-                }
-            }
-            if($request->has('nama_bank')) {
-                if($request->nama_bank != null) {
-                    $pendaftar->nama_bank = $request->nama_bank;
-                }
-            }
-            if($request->has('no_rekening')) {
-                if($request->no_rekening != null) {
-                    $pendaftar->no_rekening = $request->no_rekening;
-                }
-            }
-            if($request->has('biaya_perjalanan')) {
-                if($request->biaya_perjalanan != null) {
-                    $pendaftar->biaya_perjalanan = join("", explode(",", $request->biaya_perjalanan));
-                }
-            }
-            if($request->has('status_pendaftaran_ulang')) {
-                if($request->status_pendaftaran_ulang != null) {
-                    $pendaftar->status_pendaftaran_ulang = $request->status_pendaftaran_ulang;
+
+            if($request->has('status_keberhasilan_vaksinasi')) {
+                if($request->status_keberhasilan_vaksinasi != null) {
+                    $pendaftar->status_keberhasilan_vaksinasi = $request->status_keberhasilan_vaksinasi;
                 }
             }
 
@@ -222,12 +216,12 @@ class PendaftaranApiController extends Controller
         ], 200);
     }
 
-    public function daftar_ulang_pendaftar($id) {
+    public function pendaftar_berhasil_datang($id) {
         DB::beginTransaction();
 
         try {
             $pendaftar = Pendaftaran::find($id);
-            $pendaftar->status_pendaftaran_ulang = 1;
+            $pendaftar->status_kedatangan = 1;
 
             $pendaftar->save();
             DB::commit();
@@ -245,23 +239,66 @@ class PendaftaranApiController extends Controller
         ], 200);
     }
 
+    public function pendaftar_berhasil_vaksin($id) {
+        DB::beginTransaction();
+
+        try {
+            $pendaftar = Pendaftaran::find($id);
+            $pendaftar->status_keberhasilan_vaksinasi = 1;
+
+            $pendaftar->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => true,
+                'message' => $e->errorInfo[2],
+            ], 403);
+        }
+
+        return response()->json([
+            'data' => $pendaftar,
+            'code' => 200,
+        ], 200);
+    }
+
+    public function get_formulir_pendaftaran($id) {
+        $pendaftar = Pendaftaran::where('id', $id)->with('event')->first();
+        $file_name = 'Formulir Pendaftaran '. $pendaftar->nik . ' - ' . $pendaftar->tgl_daftar;
+        $umur = Carbon::parse($pendaftar->tgl_lahir)->age;
+        if($umur < 50) {
+            $kategori_umur = 1;
+        } else if($umur >= 50 && $umur <= 60) {
+            $kategori_umur = 2;
+        } else {
+            $kategori_umur = 3;
+        }
+
+        if($pendaftar->jenis_pendaftaran == "Online") {
+            if($pendaftar->nomor_antrian <= 100) {
+                $rentang_waktu = "10.30 s/d 11.30";
+            } else if($pendaftar->nomor_antrian <= 200) {
+                $rentang_waktu = "13.00 s/d 14.00";
+            } else if($pendaftar->nomor_antrian <= 300) {
+                $rentang_waktu = "14.00 s/d 15.00";
+            }
+        } else {
+            $rentang_waktu = "-";
+        }
+        $pdf = PDF::loadView('layouts.pendaftaran.formulir', compact('pendaftar', 'file_name', 'kategori_umur', 'rentang_waktu'))->setPaper('legal', 'portrait');
+        return $pdf->download($file_name . '.pdf');
+    }
+
     private function validateRequest(Request $request) {
         $validator = Validator::make($request->all(), [
-            'nip'               => 'required',
+            'nik'               => 'required|min:16|max:16',
             'nama_lengkap'      => 'required',
             'no_hp'             => 'required',
+            'jk'                => 'required',
             'tempat_lahir'      => 'required',
             'tgl_lahir'         => 'required|date',
-            'jk'                => 'required',
-            'pekerjaan_id'      => 'required',
-            'pangkat'           => 'required',
-            'jabatan'           => 'required',
-            'instansi'          => 'required',
-            'kabupaten_id'      => 'required',
-            'npwp'              => 'required',
-            'nama_bank'         => 'required',
-            'no_rekening'       => 'required',
-            'biaya_perjalanan'  => 'required',
+            'alamat'            => 'required',
+            'jenis_pendaftaran' => 'required',
         ]);
 
         return $validator;

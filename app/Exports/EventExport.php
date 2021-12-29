@@ -8,9 +8,8 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class EventExport implements ShouldAutoSize, WithMultipleSheets
+class EventExport implements FromView, ShouldAutoSize
 {
     use Exportable;
 
@@ -19,22 +18,10 @@ class EventExport implements ShouldAutoSize, WithMultipleSheets
         $this->id = $id;
     }
 
-    public function sheets(): array
+    public function view(): View
     {
-        $sheets = [];
+        $data = Event::where('id', $this->id)->with('pendaftaran')->first();
 
-        for ($i = 0; $i < 2; $i++) {
-            $sheets[] = new EventExportPerSheet($this->id, $i);
-        }
-
-        return $sheets;
+        return view('exports.event', compact('data'));
     }
-
-    // public function view(): View
-    // {
-    //     $data = Event::where('id', $this->id)->with(['pendaftaran' => function($pendaftar) {
-    //         return $pendaftar->with('kabupaten')->get();
-    //     }])->first();
-    //     return view('exports.event', compact('data'));
-    // }
 }

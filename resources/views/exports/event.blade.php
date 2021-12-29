@@ -3,60 +3,12 @@
     \Carbon\Carbon::setLocale('id');
 @endphp
 
-@if($sheet == 0)
 <table>
     <tr>
-        <td align="center" colspan="10"><b>DAFTAR PENERIMA TRANSPORT</b></td>
+        <td align="center" colspan="12"><b>DAFTAR HADIR KEGIATAN</b></td>
     </tr>
     <tr>
-        <td align="center" colspan="10"><b>{{$data->name}}</b></td>
-    </tr>
-    <tr>
-        <td align="center" colspan="10"><b>PADA TANGGAL {{\Carbon\Carbon::parse($data->start_date)->isoFormat('D MMMM Y')}} s/d {{\Carbon\Carbon::parse($data->end_date)->isoFormat('D MMMM Y')}}</b></td>
-    </tr>
-    <tr>
-        <td align="center" colspan="10"><b>DI {{$data->lokasi}}</b></td>
-    </tr>
-    <tr>
-        <td align="center" colspan="10"><b>(SESUAI SURAT TUGAS TERLAMPIR)</b></td>
-    </tr>
-    <tr></tr>
-</table>
-
-<table>
-    <tr>
-        <th align="center">NO.</th>
-        <th align="center">NAMA</th>
-        <th align="center">GOL</th>
-        <th align="center">JABATAN/INSTANSI</th>
-        <th align="center">RINCIAN TRANSPORT</th>
-        <th align="center">JUMLAH DITERIMA</th>
-        <th align="center">NAMA BANK</th>
-        <th align="center">NO. REKENING BANK</th>
-        <th align="center" colspan="2">TANDA TANGAN</th>
-    </tr>
-    @foreach($data->pendaftaran as $pendaftar)
-    <tr>
-        <td align="center">{{$loop->iteration}}</td>
-        <td align="center">{{$pendaftar->nama_lengkap}}</td>
-        <td align="center">{{$pendaftar->jabatan}}</td>
-        <td align="center">{{$pendaftar->instansi}} {{$pendaftar->kabupaten->nama_kabupaten}}</td>
-        <td align="center">1 OT x Rp {{number_format($pendaftar->biaya_perjalanan, 0, '.')}}</td>
-        <td align="center">Rp {{number_format($pendaftar->biaya_perjalanan, 0, '.')}}</td>
-        <td align="center">{{$pendaftar->nama_bank}}</td>
-        <td align="center">{{$pendaftar->no_rekening}}</td>
-        <td>{{$loop->iteration % 2 != 0 ? $loop->iteration.'.  .................................' : ''}}</td>
-        <td>{{$loop->iteration % 2 == 0 ? $loop->iteration.'.  .................................' : ''}}</td>
-    </tr>
-    @endforeach
-</table>
-@else
-<table>
-    <tr>
-        <td align="center" colspan="6"><b>DAFTAR HADIR KEGIATAN</b></td>
-    </tr>
-    <tr>
-        <td align="center" colspan="6"><b>{{$data->name}}</b></td>
+        <td align="center" colspan="12"><b>{{$data->name}}</b></td>
     </tr>
     <tr></tr>
     <tr>
@@ -99,25 +51,45 @@
 <table>
     <tr>
         <th align="center">NO.</th>
-        <th align="center">NAMA</th>
-        <th align="center">JABATAN</th>
-        <th align="center">INSTANSI</th>
-        <th align="center" colspan="2">TANDA TANGAN</th>
+        <th align="center">NIK</th>
+        <th align="center">NAMA LENGKAP</th>
+        <th align="center">NO HP</th>
+        <th align="center">JENIS KELAMIN</th>
+        <th align="center">TEMPAT, TANGGAL LAHIR</th>
+        <th align="center">ALAMAT</th>
+        <th align="center">TGL DAFTAR</th>
+        <th align="center">NOMOR ANTRIAN</th>
+        <th align="center">JENIS PENDAFTARAN</th>
+        <th align="center">STATUS KEDATANGAN</th>
+        <th align="center">STATUS KEBERHASILAN VAKSINASI</th>
     </tr>
     @foreach($data->pendaftaran as $pendaftar)
     <tr>
         <td align="center">{{$loop->iteration}}</td>
+        <td align="center">{{$pendaftar->nik}}</td>
         <td align="center">{{$pendaftar->nama_lengkap}}</td>
-        <td align="center">{{$pendaftar->jabatan}}</td>
-        <td align="center">{{$pendaftar->instansi}} {{$pendaftar->kabupaten->nama_kabupaten}}</td>
-        <td>{{$loop->iteration % 2 != 0 ? $loop->iteration.'.  .................................' : ''}}</td>
-        <td>{{$loop->iteration % 2 == 0 ? $loop->iteration.'.  .................................' : ''}}</td>
+        <td align="center">{{$pendaftar->no_hp}}</td>
+        <td align="center">{{$pendaftar->jk}}</td>
+        <td align="center">{{$pendaftar->tempat_lahir}}, {{\Carbon\Carbon::parse($pendaftar->tgl_lahir)->isoFormat('D MMMM Y')}}</td>
+        <td align="center">{{$pendaftar->alamat}}</td>
+        <td align="center">{{\Carbon\Carbon::parse($pendaftar->tgl_daftar)->isoFormat('D MMMM Y')}}</td>
+        <td align="center">{{$pendaftar->nomor_antrian}}</td>
+        <td align="center">{{$pendaftar->jenis_pendaftaran}}</td>
+        <td align="center">{{$pendaftar->status_kedatangan == 1 ? 'Datang' : 'Tidak Datang'}}</td>
+        <td align="center">{{$pendaftar->status_keberhasilan_vaksinasi == 1 ? 'Berhasil Vaksin' : 'Gagal Vaksin'}}</td>
     </tr>
     @endforeach
 </table>
 
 <table>
     <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -130,10 +102,24 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td align="center">Pembuat Daftar,</td>
     </tr>
     <tr></tr><tr></tr><tr></tr>
     <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -145,7 +131,13 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td align="center" style="color: red;">NIP. {{\Auth::user()->nip}}</td>
     </tr>
 </table>
-@endif

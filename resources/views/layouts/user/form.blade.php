@@ -24,16 +24,12 @@
         </div>
         <div class="card-body">
             <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" class="form-control" id="nip" name="nip" placeholder="Masukkan NIP" value="{{ isset($data) ? $data->nip : '' }}">
-            </div>
-            <div class="form-group">
                 <label for="name">Nama Lengkap</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama Lengkap" value="{{ isset($data) ? $data->name : '' }}">
             </div>
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Masukkan Username" value="{{ isset($data) ? $data->username : '' }}">
+                <label for="username">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email" value="{{ isset($data) ? $data->email : '' }}">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>

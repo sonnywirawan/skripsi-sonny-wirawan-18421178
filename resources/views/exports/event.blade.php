@@ -138,6 +138,6 @@
         <td></td>
         <td></td>
         <td></td>
-        <td align="center" style="color: red;">NIP. {{\Auth::user()->nip}}</td>
+        <td align="center" style="color: red;">{{\Auth::user()->name}}</td>
     </tr>
 </table>

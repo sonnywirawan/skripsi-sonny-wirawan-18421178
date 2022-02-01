@@ -20,9 +20,8 @@
                     <thead align="center">
                         <tr>
                             <th>No.</th>
-                            <th>NIP</th>
                             <th>Nama Lengkap</th>
-                            <th>Username</th>
+                            <th>Email</th>
                             <th>Role</th>
                             <th>Actions</th>
                         </tr>
@@ -31,9 +30,8 @@
                         @foreach($users as $user)
                         <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td>{{$user->nip}}</td>
                             <td>{{$user->name}}</td>
-                            <td>{{$user->username}}</td>
+                            <td>{{$user->email}}</td>
                             <td>{{$user->roles[0]->name}}</td>
                             <td width="100">
                                 <span>

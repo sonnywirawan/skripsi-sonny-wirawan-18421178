@@ -17,8 +17,8 @@ class UserApiController extends Controller
         return $user;
     }
 
-    public function find_by_username($username) {
-        $user = User::where('username', '=', $username)->first();
+    public function find_by_email($email) {
+        $user = User::where('email', '=', $email)->first();
         if($user == null) {
             return response()->json([
                 'error' => true,
@@ -45,9 +45,8 @@ class UserApiController extends Controller
         try {
 
             $user = User::create([
-                'nip'       => $request->nip,
                 'name'      => $request->name,
-                'username'  => $request->username,
+                'email'     => $request->email,
                 'password'  => Hash::make($request->password),
             ]);
 
@@ -77,21 +76,15 @@ class UserApiController extends Controller
         try {
             $user = User::find($id);
 
-            if($request->has('nip')) {
-                if($request->nip != null) {
-                    $user->nip = $request->nip;
-                }
-            }
-
             if($request->has('name')) {
                 if($request->name != null) {
                     $user->name = $request->name;
                 }
             }
 
-            if($request->has('username')) {
-                if($request->username != null) {
-                    $user->username = $request->username;
+            if($request->has('email')) {
+                if($request->email != null) {
+                    $user->email = $request->email;
                 }
             }
 
@@ -149,9 +142,8 @@ class UserApiController extends Controller
 
     private function validateRequest(Request $request) {
         $validator = Validator::make($request->all(), [
-            'nip'           => 'required',
             'name'          => 'required',
-            'username'      => 'required',
+            'email'         => 'required|unique:users',
             'password'      => 'required',
             'roles'         => 'required',
         ]);

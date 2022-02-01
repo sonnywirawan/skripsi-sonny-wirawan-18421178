@@ -59,9 +59,8 @@ class DatabaseSeeder extends Seeder
 
         // User Programmer
         $programmer = User::create([
-            'nip'      => '0000000000',
             'name'     => 'Programmer',
-            'username' => 'programmer',
+            'email'    => 'programmer@email.com',
             'password' => Hash::make('password'),
         ]);
         $programmer->syncRoles($role_admin);
@@ -70,9 +69,8 @@ class DatabaseSeeder extends Seeder
 
         // User Pendaftar
         $pendaftar = User::create([
-            'nip'      => '0000000001',
             'name'     => 'Test Pendaftar',
-            'username' => 'pendaftar',
+            'email'    => 'pendaftar@email.com',
             'password' => Hash::make('password'),
         ]);
         $pendaftar->syncRoles($role_pendaftar);

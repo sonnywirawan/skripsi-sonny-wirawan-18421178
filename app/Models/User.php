@@ -22,10 +22,10 @@ class User extends Authenticatable
      */
     protected $guard_name = 'api';
     protected $fillable = [
-        'nip',
         'name',
-        'username',
+        'email',
         'password',
+        'google_id'
     ];
 
     /**

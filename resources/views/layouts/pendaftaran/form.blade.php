@@ -96,11 +96,24 @@
                 <label for="alamat">Alamat</label>
                 <textarea class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat" required>{{ isset($data) ? $data->alamat : '' }}</textarea>
             </div>
+            @if(isset($id))
             {{-- Status Kedatangan --}}
             <div class="form-group">
                 <label for="status_kedatangan">Status Kedatangan</label>
-                <input id="status_kedatangan" name="status_kedatangan" type="checkbox" checked data-toggle="toggle">
+                <input id="status_kedatangan" name="status_kedatangan" type="checkbox" data-toggle="toggle"
+                @if($data->status_kedatangan == 1)
+                    checked
+                @endif>
             </div>
+            {{-- Status Keberhasilan Vaksinasi --}}
+            <div class="form-group">
+                <label for="status_keberhasilan_vaksinasi">Status Keberhasilan Vaksinasi</label>
+                <input id="status_keberhasilan_vaksinasi" name="status_keberhasilan_vaksinasi" type="checkbox" data-toggle="toggle"
+                @if($data->status_keberhasilan_vaksinasi == 1)
+                    checked
+                @endif>
+            </div>
+            @endif
         </div>
     </div>
 </form>

@@ -14,12 +14,12 @@ class UserController extends UserApiController
 {
     public function index() {
         $users = $this->get_users();
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
         return view('layouts.user.index', compact('users', 'username'));
     }
 
     public function form($id = null) {
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
         $roles = Role::all();
 
         if($id != null) {

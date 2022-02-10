@@ -11,14 +11,14 @@ use Alert;
 class PermissionController extends PermissionApiController
 {
     public function index() {
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
         $permissions = $this->get_permissions();
         
         return view('layouts.permission.index', compact('username', 'permissions'));
     }
 
     public function form($id = null) {
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
 
         if($id != null) {
             $data = $this->find_by_id($id);

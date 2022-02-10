@@ -14,12 +14,12 @@ class PendaftaranController extends PendaftaranApiController
     public function index($event_id) {
         $event = Event::find($event_id);
         $pendaftaran = $this->get_pendaftaran($event_id);
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
         return view('layouts.pendaftaran.index', compact('event_id', 'event', 'pendaftaran', 'username'));
     }
 
     public function form($event_id, $id = null) {
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
 
         if($id != null) {
             $data = $this->find_by_id($id);

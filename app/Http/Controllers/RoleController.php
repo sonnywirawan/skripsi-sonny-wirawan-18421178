@@ -12,13 +12,13 @@ use Alert;
 class RoleController extends RoleApiController
 {
     public function index() {
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
         $roles = $this->get_roles();
         return view('layouts.role.index', compact('username', 'roles'));
     }
 
     public function form($id = null) {
-        $username = Auth::user()->username;
+        $username = Auth::user()->name;
         $permissions = Permission::all();
 
         if($id != null) {

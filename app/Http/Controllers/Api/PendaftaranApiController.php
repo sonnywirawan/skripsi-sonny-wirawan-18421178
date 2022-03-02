@@ -168,15 +168,15 @@ class PendaftaranApiController extends Controller
             }
 
             if($request->has('status_kedatangan')) {
-                if($request->status_kedatangan != null) {
-                    $pendaftar->status_kedatangan = $request->status_kedatangan;
-                }
+                $pendaftar->status_kedatangan = 1;
+            } else {
+                $pendaftar->status_kedatangan = 0;
             }
 
             if($request->has('status_keberhasilan_vaksinasi')) {
-                if($request->status_keberhasilan_vaksinasi != null) {
-                    $pendaftar->status_keberhasilan_vaksinasi = $request->status_keberhasilan_vaksinasi;
-                }
+                $pendaftar->status_keberhasilan_vaksinasi = 1;
+            } else {
+                $pendaftar->status_keberhasilan_vaksinasi = 0;
             }
 
             $pendaftar->save();

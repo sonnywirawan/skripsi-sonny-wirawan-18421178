@@ -96,6 +96,17 @@
                 <label for="alamat">Alamat</label>
                 <textarea class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat" required>{{ isset($data) ? $data->alamat : '' }}</textarea>
             </div>
+            {{-- Jenis Pendaftaran --}}
+            {{-- @role('Admin')
+            <div class="form-group">
+                <label for="jenis_pendaftaran">Jenis Pendaftaran</label>
+                <select id="jenis_pendaftaran" name="jenis_pendaftaran" class="form-control">
+                  <option selected disabled hidden>Select Jenis Pendaftaran</option>
+                  <option {{isset($data) && $data->jenis_pendaftaran == "OTC" ? "selected" : ''}} value="OTC">OTC</option>
+                  <option {{isset($data) && $data->jenis_pendaftaran == "Online" ? "selected" : ''}} value="Online">Online</option>
+                </select>
+            </div>
+            @endrole --}}
             @if(isset($id))
             {{-- Status Kedatangan --}}
             <div class="form-group">

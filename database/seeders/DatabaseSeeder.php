@@ -76,5 +76,7 @@ class DatabaseSeeder extends Seeder
         $pendaftar->syncRoles($role_pendaftar);
         $permissionsByRole = $pendaftar->getPermissionsViaRoles()->pluck('id');
         $pendaftar->syncPermissions($permissionsByRole);
+
+        Artisan::call('passport:install');
     }
 }

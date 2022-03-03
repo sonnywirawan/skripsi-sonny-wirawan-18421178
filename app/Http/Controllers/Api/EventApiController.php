@@ -141,4 +141,9 @@ class EventApiController extends Controller
         $nama_file = "DAFTAR HADIR " . Event::find($id)->name . ".xlsx";
         return Excel::download(new EventExport($id), $nama_file);
     }
+
+    public function rekap_daftar_hadir($id) {
+        $data = Event::where('id', $id)->with('pendaftaran')->first();
+        return $data;
+    }
 }

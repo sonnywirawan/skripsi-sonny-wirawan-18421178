@@ -146,4 +146,8 @@ class EventApiController extends Controller
         $data = Event::where('id', $id)->with('pendaftaran')->first();
         return $data;
     }
+
+    public function get_events_without_pendaftar() {
+        return Event::all();
+    }
 }

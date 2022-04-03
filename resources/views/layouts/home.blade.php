@@ -155,7 +155,10 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>By Sonny Wirawan - 18421178 - FTI Universitas Widya Dharma Pontianak</span>
+                        <span>By Sonny Wirawan - 18421178 - FTI Universitas Widya Dharma Pontianak</span><br>
+                    </div>
+                    <div class="copyright text-center my-1">
+                        <span class="mt-5">Contact Us: stefanus.utama@gmail.com | +62 815-1357-3421</span>
                     </div>
                 </div>
             </footer>

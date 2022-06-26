@@ -36,6 +36,7 @@
                             @endforeach
                         @else
                             @foreach($datas as $data)
+                            @if($data->event)
                             <tr>
                                 <td width="50">{{$loop->iteration}}</td>
                                 <td>{{$data->event->name}}</td>
@@ -76,6 +77,7 @@
                                     </span>
                                 </td>
                             </tr>
+                            @endif
                             @endforeach
                         @endrole
                     </tbody>

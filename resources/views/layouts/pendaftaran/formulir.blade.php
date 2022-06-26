@@ -314,7 +314,7 @@
     <div class="page-break"></div>
     <br>
     <div class="halaman-2">
-        <p>Yth. {{$pendaftar->nama_lengkap}} terima kasih telah melakukan pendaftaran vaksin di {{$pendaftar->event->lokasi}} pada tanggal {{\Carbon\Carbon::parse($pendaftar->event->start_date)->isoFormat('D MMMM Y')}}.</p>
+        <p>Yth. {{$pendaftar->nama_lengkap}} terima kasih telah melakukan pendaftaran vaksin di {{$pendaftar->event->lokasi}} pada tanggal {{\Carbon\Carbon::parse($pendaftar->event->start_date)->isoFormat('D MMMM Y')}} - {{\Carbon\Carbon::parse($pendaftar->event->end_date)->isoFormat('D MMMM Y')}}.</p>
         <br>
         <p>Nomor Pendaftaran anda:</p>
         <h2>{{$pendaftar->nomor_antrian}}</h2>

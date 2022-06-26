@@ -26,7 +26,8 @@
                             <th>Waktu Pendaftaran</th>
                             <th>Waktu Pelaksanaan</th>
                             <th>Lokasi</th>
-                            <th>Jumlah peserta terdaftar / Limit</th>
+                            <th>Jumlah peserta OTC</th>
+                            <th>Jumlah peserta Online / Limit</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -38,7 +39,8 @@
                             <td>{{\Carbon\Carbon::parse($event->registration_start_date)->isoFormat('D MMMM Y')}} s.d {{\Carbon\Carbon::parse($event->registration_end_date)->isoFormat('D MMMM Y')}}</td>
                             <td>{{\Carbon\Carbon::parse($event->start_date)->isoFormat('D MMMM Y')}} s.d {{\Carbon\Carbon::parse($event->end_date)->isoFormat('D MMMM Y')}}</td>
                             <td>{{$event->lokasi}}</td>
-                            <td>{{$event->pendaftaran->count() . " / " . $event->limit}}</td>
+                            <td>{{$event->pendaftaran->where('jenis_pendaftaran', 'OTC')->count()}}</td>
+                            <td>{{$event->pendaftaran->where('jenis_pendaftaran', 'Online')->count() . " / " . $event->limit}}</td>
                             <td width="200">
                                 @role('Admin')
                                     <span>

@@ -22,6 +22,18 @@ class EventApiController extends Controller
     }
 
     public function create_event(Request $request) {
+        if(Carbon::parse($request->registration_start_date) > Carbon::parse($request->registration_end_date)) {
+            return response()->json([
+                'error' => true,
+                'message' => "Tanggal Mulai Pendaftaran tidak bisa melebihi Tanggal Selesai Pendaftaran",
+            ], 400);
+        } else if(Carbon::parse($request->start_date) > Carbon::parse($request->end_date)) {
+            return response()->json([
+                'error' => true,
+                'message' => "Tanggal Mulai Event tidak bisa melebihi Tanggal Selesai Event",
+            ], 400);
+        }
+
         DB::beginTransaction();
         
         try {
@@ -51,6 +63,18 @@ class EventApiController extends Controller
     }
 
     public function edit_event(Request $request, $id) {
+        if(Carbon::parse($request->registration_start_date) > Carbon::parse($request->registration_end_date)) {
+            return response()->json([
+                'error' => true,
+                'message' => "Tanggal Mulai Pendaftaran tidak bisa melebihi Tanggal Selesai Pendaftaran",
+            ], 400);
+        } else if(Carbon::parse($request->start_date) > Carbon::parse($request->end_date)) {
+            return response()->json([
+                'error' => true,
+                'message' => "Tanggal Mulai Event tidak bisa melebihi Tanggal Selesai Event",
+            ], 400);
+        }
+
         DB::beginTransaction();
 
         try {

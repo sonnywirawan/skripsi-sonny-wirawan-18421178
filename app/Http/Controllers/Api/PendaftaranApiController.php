@@ -281,6 +281,8 @@ class PendaftaranApiController extends Controller
                 $rentang_waktu = "13.00 s/d 14.00";
             } else if($pendaftar->nomor_antrian <= 300) {
                 $rentang_waktu = "14.00 s/d 15.00";
+            } else {
+                $rentang_waktu = "15.00 s/d selesai";
             }
         } else {
             $rentang_waktu = "-";

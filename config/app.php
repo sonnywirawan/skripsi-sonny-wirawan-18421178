@@ -165,6 +165,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -235,6 +236,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ],
 
 ];

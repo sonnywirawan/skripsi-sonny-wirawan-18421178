@@ -160,6 +160,9 @@
                     <div class="copyright text-center my-1">
                         <span class="mt-5">Contact Us: stefanus.utama@gmail.com | +62 815-1357-3421</span>
                     </div>
+                    <div class="copyright text-center my-1">
+                        <span class="mt-5">Copyright &copy; SB Admin 2</span>
+                    </div>
                 </div>
             </footer>
             <!-- End of Footer -->
